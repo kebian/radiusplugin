@@ -956,7 +956,7 @@ void  * auth_user_pass_verify(void * c)
         }
 
         // if there is no username and a common name is present then use that
-        if (( newuser->getUsername().size() < 1) && (newuser->getCommonname().size() > 1)) {
+        if (( newuser->getUsername().size() < 1) && (newuser->getCommonname().size() > 0)) {
             cerr << getTime() << "RADIUS-PLUGIN: FOREGROUND THREAD: Using common name in lieu of username" << endl;
             newuser->setUsername(newuser->getCommonname());
         }
