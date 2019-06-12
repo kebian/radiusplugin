@@ -955,6 +955,12 @@ void  * auth_user_pass_verify(void * c)
             context->addUser(newuser);
         }
 
+        // if there is no username and a common name is present then use that
+        if (( newuser->getUsername().size() < 1) && (newuser->getCommonname().size() > 1)) {
+            cerr << getTime() << "RADIUS-PLUGIN: FOREGROUND THREAD: Using common name in lieu of username" << endl;
+            newuser->setUsername(newuser->getCommonname());
+        }
+
         if ( DEBUG ( context->getVerbosity() ) )
             cerr << getTime() << "RADIUS-PLUGIN: FOREGROUND THREAD: New user: username: "<< newuser->getUsername()  <<", password: *****"
                  << ", newuser ip: " << newuser->getCallingStationId()

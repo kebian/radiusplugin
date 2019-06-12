@@ -34,6 +34,16 @@ The plugin was developed and tested under Debian Sarge and OpenVPN 2.0 on x86-ma
 -----------------------------------------------------------------------------------------------------
 
 
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+                      THIS PLUGIN HAS BEEN MODIFIED FROM THE ORIGINAL
+					               
+This version will allow certificate based authentication by using the certificate common name if
+the username is missing.  Note you should set auth-user-pass-optional in the server's openvpn conf
+file or plugins will not be used for authentication if a username is absent.
+-----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+
 
 The RADIUS-Class:
 -----------------

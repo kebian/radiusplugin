@@ -101,3 +101,6 @@ radiusplugin_2.1:
 radiusplugin_2.1a:
 - Implement accounting only feature (option: accountingonly, default false)
 - Implement non fatal accounting (failures during accounting let the user still connect) (nonfatalaccounting)
+
+radiusplugin_2.1b:
+- Allows certificate based authorization by using the common name if the username is missing
