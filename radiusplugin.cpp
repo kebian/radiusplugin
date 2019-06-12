@@ -473,8 +473,16 @@ error:
                 {
                     newuser->setFramedIp ( string ( get_env ( "ifconfig_pool_remote_ip", envp ) ) );
                 }
-                if ( DEBUG ( context->getVerbosity() ) )
+
+                if (get_env("ifconfig_pool_remote_ip6", envp) != NULL)
+                {
+                    newuser->setFramedIpv6( string( get_env("ifconfig_pool_remote_ip6", envp) ) );
+                }
+
+                if ( DEBUG ( context->getVerbosity() ) ) {
                     cerr << getTime() << "RADIUS-PLUGIN: FOREGROUND: Set FramedIP to the IP (" << newuser->getFramedIp() << ") OpenVPN assigned to the user " << newuser->getUsername() << "\n";
+                    cerr << getTime() << "RADIUS-PLUGIN: FOREGROUND: Set FramedIPv6 to the IP (" << newuser->getFramedIpv6() << ") OpenVPN assigned to the user " << newuser->getUsername() << "\n";
+                }
                 //the user must be there and must be authenticated but not accounted
                 // isAccounted and isAuthenticated is true it is client connect for renegotiation, the user is already in the accounting process
                 if ( newuser!=NULL && newuser->isAccounted() ==false && newuser->isAuthenticated() )
@@ -491,6 +499,7 @@ error:
                     context->acctsocketbackgr.send ( newuser->getPortnumber() );
                     context->acctsocketbackgr.send ( newuser->getCallingStationId() );
                     context->acctsocketbackgr.send ( newuser->getFramedIp() );
+                    context->acctsocketbackgr.send ( newuser->getFramedIpv6() );
                     context->acctsocketbackgr.send ( newuser->getCommonname() );
                     context->acctsocketbackgr.send ( newuser->getAcctInterimInterval() );
                     context->acctsocketbackgr.send ( newuser->getFramedRoutes() );
@@ -978,6 +987,7 @@ void  * auth_user_pass_verify(void * c)
             context->authsocketbackgr.send ( newuser->getCallingStationId() );
             context->authsocketbackgr.send ( newuser->getCommonname() );
             context->authsocketbackgr.send ( newuser->getFramedIp() );
+            context->authsocketbackgr.send ( newuser->getFramedIpv6() );
 
             //get the response
             const int status = context->authsocketbackgr.recvInt();
@@ -994,6 +1004,10 @@ void  * auth_user_pass_verify(void * c)
                 newuser->setFramedIp ( context->authsocketbackgr.recvStr() );
                 if ( DEBUG ( context->getVerbosity() ) )
                     cerr << getTime() << "RADIUS-PLUGIN: FOREGROUND THREAD: Received framed ip for user: "<< newuser->getFramedIp() << "." << endl;
+
+                newuser->setFramedIpv6 ( context->authsocketbackgr.recvStr() );
+                if ( DEBUG ( context->getVerbosity() ) )
+                    cerr << getTime() << "RADIUS-PLUGIN: FOREGROUND THREAD: Received framed ipv6 for user: "<< newuser->getFramedIpv6() << "." << endl;
 
 
                 // get the interval from the background process

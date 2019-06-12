@@ -104,6 +104,7 @@ void AccountingProcess::Accounting(PluginContext * context)
                     user->setPortnumber(context->acctsocketforegr.recvInt());
                     user->setCallingStationId(context->acctsocketforegr.recvStr());
                     user->setFramedIp(context->acctsocketforegr.recvStr());
+                    user->setFramedIpv6(context->acctsocketforegr.recvStr());
                     user->setCommonname(context->acctsocketforegr.recvStr());
                     user->setAcctInterimInterval(context->acctsocketforegr.recvInt());
                     user->setFramedRoutes(context->acctsocketforegr.recvStr());

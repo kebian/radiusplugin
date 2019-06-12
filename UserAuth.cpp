@@ -58,7 +58,8 @@ int UserAuth::sendAcceptRequestPacket(PluginContext * context)
 				ra7(ATTRIB_NAS_Port_Type),
 				ra8(ATTRIB_Service_Type),
 				ra9(ATTRIB_Framed_IP_Address),
-				ra10(ATTRIB_Acct_Session_ID, this->getSessionId());
+				ra10(ATTRIB_Acct_Session_ID, this->getSessionId()),
+				ra11(ATTRIB_Framed_IPv6_Address);
 	
 	
 	if (DEBUG (context->getVerbosity()))
@@ -148,7 +149,16 @@ int UserAuth::sendAcceptRequestPacket(PluginContext * context)
 			}
 	}
 	
-	
+	if(this->getFramedIpv6().compare("") != 0)
+	{
+		if (DEBUG (context->getVerbosity()))
+			cerr << getTime() << "RADIUS-PLUGIN: Send packet Re-Auth packet for framedIPv6="<< this->getFramedIpv6().c_str() << ".\n";
+			ra11.setValue(this->getFramedIpv6());
+			if (packet.addRadiusAttribute(&ra11))
+			{
+				cerr << getTime() << "RADIUS-PLUGIN: Fail to add attribute Framed-IPv6-Address.\n";
+			}
+	}
 	
 	if (DEBUG (context->getVerbosity()))
 		cerr << getTime() << "RADIUS-PLUGIN: Send packet to " << server->getName().c_str() <<".\n";
@@ -250,6 +260,18 @@ void UserAuth::parseResponsePacket(RadiusPacket *packet, PluginContext * context
     	cerr << getTime() << "RADIUS-PLUGIN: BACKGROUND AUTH: framed ip: " << this->getFramedIp() <<".\n";
 	
 	
+	range=packet->findAttributes(ATTRIB_Framed_IPv6_Address);
+	iter1=range.first;
+	iter2=range.second;	
+	
+	if (iter1!=iter2)
+	{
+		this->setFramedIpv6(iter1->second.ipv6FromBuf());
+	}
+
+	if (DEBUG (context->getVerbosity()))
+    	cerr << getTime() << "RADIUS-PLUGIN: BACKGROUND AUTH: framed ipv6: " << this->getFramedIpv6() <<".\n";
+
 	
 	range=packet->findAttributes(85);
 	iter1=range.first;

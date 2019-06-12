@@ -78,6 +78,7 @@ void AuthenticationProcess::Authentication(PluginContext * context)
 			    user->setCommonname(context->authsocketforegr.recvStr());
 				// framed-ip is an @IP if we're renegotiating, "" otherwise
 			    user->setFramedIp(context->authsocketforegr.recvStr());
+					user->setFramedIpv6(context->authsocketforegr.recvStr());
 		 		
 			    if (DEBUG (context->getVerbosity()) && (user->getFramedIp().compare("") == 0))
 			    cerr << getTime() << "RADIUS-PLUGIN: BACKGROUND  AUTH: New user auth: username: " << user->getUsername() << ", password: *****, calling station: " << user->getCallingStationId() << ", commonname: " << user->getCommonname() << ".\n";
@@ -104,6 +105,7 @@ void AuthenticationProcess::Authentication(PluginContext * context)
 					
 				//send the framed ip to the parent process
 			     	context->authsocketforegr.send(user->getFramedIp());
+						context->authsocketforegr.send(user->getFramedIpv6());
 										
 					//send the interval to the parent process
 			     	context->authsocketforegr.send(user->getAcctInterimInterval());

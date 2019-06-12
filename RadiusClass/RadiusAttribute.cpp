@@ -439,6 +439,18 @@ int RadiusAttribute::setValue(char *value)
 			memcpy(this->value, value, int(value[5])+4);
 			this->length=int(value[5])+4;
 			break;
+
+		// 128bit IPv6 address
+		case ATTRIB_Framed_IPv6_Address:
+			if(!(this->value=new Octet[16]))
+			{
+				return ALLOC_ERROR;
+			}
+			if (inet_pton(AF_INET6, value, this->value) < 1) {
+				return BAD_IP;
+			}
+			this->length=16;
+			break;
 		
 		//String: They need only copied in a new char array. 		
 		default:
@@ -567,4 +579,16 @@ string RadiusAttribute::ipFromBuf(void)
 		}
 	}
 	return string(ip3);			 
-}  
+}
+
+string RadiusAttribute::ipv6FromBuf(void)
+{
+	char buffer[INET6_ADDRSTRLEN];
+	string result;
+
+	if (inet_ntop(AF_INET6, this->value, buffer, sizeof(buffer))) {
+		result = buffer;
+	}
+
+	return result;
+}

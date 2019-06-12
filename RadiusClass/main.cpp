@@ -711,6 +711,7 @@ void parseResponsePacket(RadiusPacket *packet)
 	iter2=range.second;	
 	string froutes;
 	string ip;
+	string ipv6;
 	int acct_interval;
 	RadiusVendorSpecificAttribute vsa;
 	
@@ -730,6 +731,15 @@ void parseResponsePacket(RadiusPacket *packet)
 		ip=iter1->second.ipFromBuf();
 	}
 	cout << "\nFramed IP: " << ip;
+
+	range=packet->findAttributes(ATTRIB_Framed_IPv6_Address);
+	iter1=range.first;
+	iter2=range.second;	
+	if (iter1!=iter2)
+	{
+		ipv6=iter1->second.ipv6FromBuf();
+	}
+	cout << "\nFramed IPv6: " << ipv6;
 		
 	
 	range=packet->findAttributes(85);

@@ -93,6 +93,7 @@ UserAcct::UserAcct(const UserAcct &u):User(u)
  * - Acct_Session_Time,
  * - Acct_Input_Gigawords,
  * - Acct_Output_Gigawords
+ * - Framed_IPv6_Address
  * @param context The context of the plugin.
  * @return An integer, 0 is everything is ok, else 1.*/
 int UserAcct::sendUpdatePacket(PluginContext *context)
@@ -117,7 +118,8 @@ int UserAcct::sendUpdatePacket(PluginContext *context)
 				ra13(ATTRIB_Acct_Output_Octets, this->bytesout),
 				ra14(ATTRIB_Acct_Session_Time),
 				ra15(ATTRIB_Acct_Input_Gigawords, this->gigain),
-				ra16(ATTRIB_Acct_Output_Gigawords, this->gigaout);				
+				ra16(ATTRIB_Acct_Output_Gigawords, this->gigaout),
+				ra17(ATTRIB_Framed_IPv6_Address, this->getFramedIpv6());			
 	
 	
 	
@@ -229,7 +231,13 @@ int UserAcct::sendUpdatePacket(PluginContext *context)
 	if (packet.addRadiusAttribute(&ra16)) {
 		cerr << getTime() << "RADIUS-PLUGIN: BACKGROUND-ACCT:  Fail to add attribute ATTRIB_Acct_Output_Gigawords.\n";
 	}
-	
+
+	if (this->getFramedIpv6().size()) {
+		if (packet.addRadiusAttribute(&ra17)) {
+			cerr << getTime() << "RADIUS-PLUGIN: BACKGROUND-ACCT:  Fail to add attribute ATTRIB_Framed_IPv6_Address.\n";
+		}
+	}
+
 	//send the packet to the server
 	if (packet.radiusSend(server)<0)
 	{
@@ -274,6 +282,7 @@ int UserAcct::sendUpdatePacket(PluginContext *context)
  * - Acct_Session_ID,
  * - Acct_Status_Type,
  * - Framed_Protocol,
+ * - Framed_IPv6_Address
  * @param  context The context of the plugin.
  * @return An integer, 0 is everything is ok, else 1.*/
 int UserAcct::sendStartPacket(PluginContext * context)
@@ -291,7 +300,8 @@ int UserAcct::sendStartPacket(PluginContext * context)
 						ra8(ATTRIB_Service_Type),
 						ra9(ATTRIB_Acct_Session_ID, this->getSessionId()),
 		                                ra10(ATTRIB_Acct_Status_Type,string("1")), // "Start"
-						ra11(ATTRIB_Framed_Protocol);
+						ra11(ATTRIB_Framed_Protocol),
+						ra12(ATTRIB_Framed_IPv6_Address, this->getFramedIpv6());
 				
 	
 	
@@ -376,6 +386,12 @@ int UserAcct::sendStartPacket(PluginContext * context)
 				cerr << getTime() << "RADIUS-PLUGIN: BACKGROUND-ACCT:  Fail to add attribute ATTRIB_Framed_Protocol.\n";
 			}
 	}
+
+	if (this->getFramedIpv6().size()) {
+		if (packet.addRadiusAttribute(&ra12)) {
+			cerr << getTime() << "RADIUS-PLUGIN: BACKGROUND-ACCT:  Fail to add attribute ATTRIB_Framed_IPv6_Address.\n";
+		}
+	}
 	
 	//send the packet	
 	if (packet.radiusSend(server)<0)
@@ -431,6 +447,7 @@ int UserAcct::sendStartPacket(PluginContext * context)
  * - Acct_Input_Octets,
  * - Acct_Output_Octets,
  * - Acct_Session_Time
+ * - Framed_IPv6_Address
  * @param context The context of the plugin.
  * @return An integer, 0 is everything is ok, else 1.*/
 int UserAcct::sendStopPacket(PluginContext * context)
@@ -453,7 +470,8 @@ int UserAcct::sendStopPacket(PluginContext * context)
 				ra13(ATTRIB_Acct_Output_Octets, this->bytesout),
 				ra14(ATTRIB_Acct_Session_Time),
 				ra15(ATTRIB_Acct_Input_Gigawords, this->gigain),
-				ra16(ATTRIB_Acct_Output_Gigawords, this->gigaout);				
+				ra16(ATTRIB_Acct_Output_Gigawords, this->gigaout),
+				ra17(ATTRIB_Framed_IPv6_Address, this->getFramedIpv6());
 	
 	
 		
@@ -562,6 +580,12 @@ int UserAcct::sendStopPacket(PluginContext * context)
 
 	if (packet.addRadiusAttribute(&ra16)) {
 		cerr << getTime() << "RADIUS-PLUGIN: BACKGROUND-ACCT:  Fail to add attribute ATTRIB_Acct_Output_Gigawords.\n";
+	}
+
+	if (this->getFramedIpv6().size()) {
+		if (packet.addRadiusAttribute(&ra17)) {
+			cerr << getTime() << "RADIUS-PLUGIN: BACKGROUND-ACCT:  Fail to add attribute ATTRIB_Framed_IPv6_Address.\n";
+		}
 	}
 	
 	//send the packet

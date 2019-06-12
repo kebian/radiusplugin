@@ -25,6 +25,7 @@
 User::User()
 {
 	this->framedip="";
+	this->framedipv6="";
 	this->framedroutes="";
 	this->key="";
         this->statusfilekey="";
@@ -70,6 +71,7 @@ User & User::operator=(const User & u)
 	this->commonname=u.commonname;
 	this->framedroutes=u.framedroutes;
 	this->framedip=u.framedip;
+	this->framedipv6=u.framedipv6;
 	this->key=u.key;
         this->statusfilekey=u.statusfilekey;
 	this->callingstationid=u.callingstationid;
@@ -110,6 +112,7 @@ User::User(const User & u)
 	this->commonname=u.commonname;
 	this->framedroutes=u.framedroutes;
 	this->framedip=u.framedip;
+	this->framedipv6=u.framedipv6;
 	this->key=u.key;
         this->statusfilekey=u.statusfilekey;
 	this->callingstationid=u.callingstationid;
@@ -188,6 +191,20 @@ string User::getFramedIp(void)
 void User::setFramedIp(string ip)
 {
 	this->framedip=ip;
+}
+
+/** The getter method for the framed ipv6.
+ *  @return The framed ipv6 as a string.*/
+string User::getFramedIpv6(void)
+{
+	return this->framedipv6;
+}
+
+/** The setter method for the framedipv6.
+ * @param ip The framedipv6.*/
+void User::setFramedIpv6(string ip)
+{
+	this->framedipv6=ip;
 }
 
 /** The getter method for the fkey.
